@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 ///Intelligent Scissors
 ///
 
+
 namespace ImageQuantization
 {
     /// <summary>
@@ -16,6 +17,11 @@ namespace ImageQuantization
     public struct RGBPixel
     {
         public byte red, green, blue;
+        public RGBPixel(byte r, byte g, byte b)
+        {
+            red = r; green = g; blue = b;
+        }
+
     }
     public struct RGBPixelD
     {
@@ -149,16 +155,69 @@ namespace ImageQuantization
                 ImageBMP.UnlockBits(bmd);
             }
             PicBox.Image = ImageBMP;
+            DistinctColours(ImageMatrix);
+        }
+
+        /// <summary>
+        /// Extracts the Distinct Colours from the image
+        /// <param name="ImageMatrix">Colored image matrix</param>
+        /// <returns>List of all the distinct colours </returns>
+        /// </summary>
+        public static void DistinctColours(RGBPixel[,] ImageMatrix)
+        {
+            RGBPixel[,,] flagColour = new RGBPixel[256, 256, 256];
+
+            for (int i = 0; i < 256; i++){
+                for (int j = 0; j < 256; j++){
+                    for (int k = 0; k < 256; k++)
+                        flagColour[i, j, k] = new RGBPixel(255, 255, 255);
+                }
+            }
+
+            List<RGBPixel> DistinctColours = new List<RGBPixel>();
+            int w = ImageOperations.GetWidth(ImageMatrix) , h = ImageOperations.GetHeight(ImageMatrix), cnt=0;
+            for (int i = 0; i < h; i++)
+            {
+                for (int j = 0; j < w; j++)
+                {
+                    byte r = ImageMatrix[i, j].red, g = ImageMatrix[i, j].green, b = ImageMatrix[i, j].blue;
+                    if (ImageMatrix[i, j].red != 255 && ImageMatrix[i, j].green != 255 && ImageMatrix[i, j].green != 255)
+                    {
+                        if (flagColour[r, g, b].red != 255 && flagColour[r, g, b].green != 255 && flagColour[r, g, b].blue != 255){
+                            continue;
+                        }
+                        else
+                        {
+                            flagColour[r,g, b] = new RGBPixel(r, g, b);
+                            DistinctColours.Add(new RGBPixel(r, g, b));
+                        }
+                    }
+                    else if(r == 255 && g == 255 && g == 255 && cnt == 0){
+                        flagColour[r, g, b] = new RGBPixel(r, g,b);
+                        DistinctColours.Add(new RGBPixel(r,g, b));
+                        cnt++;
+                    }
+                }
+            }
+            //string file_name = "C:\\Users\\Rolla\\Desktop\\colour_test.txt";
+            //System.IO.StreamWriter objWriter;
+            //objWriter = new System.IO.StreamWriter(file_name);
+            //foreach (var clr in DistinctColours)
+            //{
+            //    objWriter.Write("(" + clr.red + "," + clr.green + "," + clr.blue + ")");
+            //}
+            //objWriter.Close();
+
         }
 
 
-       /// <summary>
-       /// Apply Gaussian smoothing filter to enhance the edge detection 
-       /// </summary>
-       /// <param name="ImageMatrix">Colored image matrix</param>
-       /// <param name="filterSize">Gaussian mask size</param>
-       /// <param name="sigma">Gaussian sigma</param>
-       /// <returns>smoothed color image</returns>
+        /// <summary>
+        /// Apply Gaussian smoothing filter to enhance the edge detection 
+        /// </summary>
+        /// <param name="ImageMatrix">Colored image matrix</param>
+        /// <param name="filterSize">Gaussian mask size</param>
+        /// <param name="sigma">Gaussian sigma</param>
+        /// <returns>smoothed color image</returns>
         public static RGBPixel[,] GaussianFilter1D(RGBPixel[,] ImageMatrix, int filterSize, double sigma)
         {
             int Height = GetHeight(ImageMatrix);
