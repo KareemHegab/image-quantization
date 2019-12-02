@@ -157,7 +157,36 @@ namespace ImageQuantization
             PicBox.Image = ImageBMP;
             DistinctColours(ImageMatrix);
         }
+        
+        
+///////////////////////////////////////////////////////////////////
+        /// <summary>
+        // Iterate over the image and check if the color is not in the list  then add it , else continue .
+        /// </summary>
+        public static List <RGBPixel> distinct (RGBPixel[,] image)
+        {
+            List<RGBPixel> list = new List<RGBPixel>();
+            
+            for (int i =0; i < ImageOperations.GetHeight(image); i++)
+            {
+                for (int j = 0; j < ImageOperations.GetWidth(image); j++)
+                {
+                    if (!list.Contains(image[i, j]))
+                    {
 
+                        list.Add(image[i, j]);
+
+                    }
+
+                }
+
+            }
+
+            return list;
+        }
+ 
+        
+        
         /// <summary>
         /// Extracts the Distinct Colours from the image
         /// <param name="ImageMatrix">Colored image matrix</param>
