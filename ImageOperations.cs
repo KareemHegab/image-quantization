@@ -27,11 +27,32 @@ namespace ImageQuantization
     {
         public double red, green, blue;
     }
+   
+    // To describe the relation between two vertices 
+    // Holds the value of the similarity between source and destination 
+    // weight denotes similarity
+    // start denotes source 
+    // end denotes destination 
     
-  
+  public class relation
+    {
+        double weight;
+        int start;
+        int end;
+        public relation(double w, int s, int e)
+        {
+
+            weight = w;
+            start = s;
+            end = e;
+
+        }
+
+    }
     /// <summary>
     /// Library of static functions that deal with images
     /// </summary>
+    
     public class ImageOperations
     {
         /// <summary>
@@ -156,6 +177,28 @@ namespace ImageQuantization
             }
             PicBox.Image = ImageBMP;
             DistinctColours(ImageMatrix);
+        }
+        
+        /// <summary>
+        // Take each two colors and get the similarities between them .
+        // Creating object of relation with similarity value + start & end color index .
+        // Add it to rlist
+        /// </summary>
+       public static List<relation> distance (List<RGBPixel> list)
+        {
+            List<relation> rlist = new List<relation> ();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = i + 1; j < list.Count; j++)
+                {
+
+                double  s = Math.Sqrt(Math.Pow(list[i].red - list[j].red, 2) + Math.Pow(list[i].green - list[j].green, 2) + Math.Pow(list[i].blue - list[j].blue, 2));
+                    relation r = new relation(s, i, j);
+                    rlist.Add(r);
+                }
+            }
+            return rlist;
         }
 
         /// <summary>
