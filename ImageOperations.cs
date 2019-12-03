@@ -55,6 +55,8 @@ namespace ImageQuantization
     
     public class ImageOperations
     {
+
+        public List<RGBPixel> DistinctColoursList;
         /// <summary>
         /// Open an image and load it into 2D array of colors (size: Height x Width)
         /// </summary>
@@ -208,48 +210,22 @@ namespace ImageQuantization
         /// </summary>
         public static void DistinctColours(RGBPixel[,] ImageMatrix)
         {
-            RGBPixel[,,] flagColour = new RGBPixel[256, 256, 256];
-
-            for (int i = 0; i < 256; i++){
-                for (int j = 0; j < 256; j++){
-                    for (int k = 0; k < 256; k++)
-                        flagColour[i, j, k] = new RGBPixel(255, 255, 255);
-                }
-            }
-
-            List<RGBPixel> DistinctColours = new List<RGBPixel>();
-            int w = ImageOperations.GetWidth(ImageMatrix) , h = ImageOperations.GetHeight(ImageMatrix), cnt=0;
+            bool[,,] flagColour = new bool[256, 256, 256];
+            DistinctColoursList = new List<RGBPixel>();
+            int w = ImageOperations.GetWidth(ImageMatrix), h = ImageOperations.GetHeight(ImageMatrix), cnt = 0;
             for (int i = 0; i < h; i++)
             {
                 for (int j = 0; j < w; j++)
                 {
                     byte r = ImageMatrix[i, j].red, g = ImageMatrix[i, j].green, b = ImageMatrix[i, j].blue;
-                    if (ImageMatrix[i, j].red != 255 && ImageMatrix[i, j].green != 255 && ImageMatrix[i, j].green != 255)
+                    if (flagColour[r,g,b] == false)
                     {
-                        if (flagColour[r, g, b].red != 255 && flagColour[r, g, b].green != 255 && flagColour[r, g, b].blue != 255){
-                            continue;
-                        }
-                        else
-                        {
-                            flagColour[r,g, b] = new RGBPixel(r, g, b);
-                            DistinctColours.Add(new RGBPixel(r, g, b));
-                        }
+                        flagColour[r, g, b] = true;
+                        DistinctColoursList.Add(new RGBPixel(r, g, b));
                     }
-                    else if(r == 255 && g == 255 && g == 255 && cnt == 0){
-                        flagColour[r, g, b] = new RGBPixel(r, g,b);
-                        DistinctColours.Add(new RGBPixel(r,g, b));
-                        cnt++;
-                    }
+                    
                 }
             }
-            //string file_name = "C:\\Users\\Rolla\\Desktop\\colour_test.txt";
-            //System.IO.StreamWriter objWriter;
-            //objWriter = new System.IO.StreamWriter(file_name);
-            //foreach (var clr in DistinctColours)
-            //{
-            //    objWriter.Write("(" + clr.red + "," + clr.green + "," + clr.blue + ")");
-            //}
-            //objWriter.Close();
 
         }
 
