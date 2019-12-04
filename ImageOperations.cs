@@ -178,7 +178,10 @@ namespace ImageQuantization
                 ImageBMP.UnlockBits(bmd);
             }
             PicBox.Image = ImageBMP;
-            DistinctColours(ImageMatrix);
+            DistinctColours DC = new DistinctColours(ImageMatrix);
+            Prim prim= new Prim(DC.DistinctColoursList);
+        }
+DistinctColours(ImageMatrix);
         }
         
         /// <summary>
@@ -226,9 +229,7 @@ namespace ImageQuantization
                     
                 }
             }
-
-        }
-
+        
 
         /// <summary>
         /// Apply Gaussian smoothing filter to enhance the edge detection 
