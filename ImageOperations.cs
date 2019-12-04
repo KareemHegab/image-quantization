@@ -27,13 +27,36 @@ namespace ImageQuantization
     {
         public double red, green, blue;
     }
+   
+    // To describe the relation between two vertices 
+    // Holds the value of the similarity between source and destination 
+    // weight denotes similarity
+    // start denotes source 
+    // end denotes destination 
     
-  
+  public class relation
+    {
+        double weight;
+        int start;
+        int end;
+        public relation(double w, int s, int e)
+        {
+
+            weight = w;
+            start = s;
+            end = e;
+
+        }
+
+    }
     /// <summary>
     /// Library of static functions that deal with images
     /// </summary>
+    
     public class ImageOperations
     {
+
+        public List<RGBPixel> DistinctColoursList;
         /// <summary>
         /// Open an image and load it into 2D array of colors (size: Height x Width)
         /// </summary>
@@ -155,11 +178,57 @@ namespace ImageQuantization
                 ImageBMP.UnlockBits(bmd);
             }
             PicBox.Image = ImageBMP;
-
             DistinctColours DC = new DistinctColours(ImageMatrix);
             Prim prim= new Prim(DC.DistinctColoursList);
         }
+DistinctColours(ImageMatrix);
+        }
+        
+        /// <summary>
+        // Take each two colors and get the similarities between them .
+        // Creating object of relation with similarity value + start & end color index .
+        // Add it to rlist
+        /// </summary>
+       public static List<relation> distance (List<RGBPixel> list)
+        {
+            List<relation> rlist = new List<relation> ();
 
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = i + 1; j < list.Count; j++)
+                {
+
+                double  s = Math.Sqrt(Math.Pow(list[i].red - list[j].red, 2) + Math.Pow(list[i].green - list[j].green, 2) + Math.Pow(list[i].blue - list[j].blue, 2));
+                    relation r = new relation(s, i, j);
+                    rlist.Add(r);
+                }
+            }
+            return rlist;
+        }
+
+        /// <summary>
+        /// Extracts the Distinct Colours from the image
+        /// <param name="ImageMatrix">Colored image matrix</param>
+        /// <returns>List of all the distinct colours </returns>
+        /// </summary>
+        public static void DistinctColours(RGBPixel[,] ImageMatrix)
+        {
+            bool[,,] flagColour = new bool[256, 256, 256];
+            DistinctColoursList = new List<RGBPixel>();
+            int w = ImageOperations.GetWidth(ImageMatrix), h = ImageOperations.GetHeight(ImageMatrix), cnt = 0;
+            for (int i = 0; i < h; i++)
+            {
+                for (int j = 0; j < w; j++)
+                {
+                    byte r = ImageMatrix[i, j].red, g = ImageMatrix[i, j].green, b = ImageMatrix[i, j].blue;
+                    if (flagColour[r,g,b] == false)
+                    {
+                        flagColour[r, g, b] = true;
+                        DistinctColoursList.Add(new RGBPixel(r, g, b));
+                    }
+                    
+                }
+            }
         
 
         /// <summary>
