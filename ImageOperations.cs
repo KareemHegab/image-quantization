@@ -181,8 +181,7 @@ namespace ImageQuantization
             DistinctColours DC = new DistinctColours(ImageMatrix);
             Prim prim= new Prim(DC.DistinctColoursList);
         }
-DistinctColours(ImageMatrix);
-        }
+        
         
         /// <summary>
         // Take each two colors and get the similarities between them .
@@ -229,7 +228,7 @@ DistinctColours(ImageMatrix);
                     
                 }
             }
-        
+        }
 
         /// <summary>
         /// Apply Gaussian smoothing filter to enhance the edge detection 
