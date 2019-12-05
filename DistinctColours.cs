@@ -14,6 +14,27 @@ namespace ImageQuantization
             getDistinct(ImageMatrix);
 
         }
+        
+        
+       /// <summary>
+       /// Time Complexity of this function is O(n^2) 
+       /// </summary>
+       public static HashSet <RGBPixel> distinct (RGBPixel[,] image)
+        {
+            HashSet<RGBPixel> set = new HashSet<RGBPixel>();
+            
+            for (int i =0; i < ImageOperations.GetHeight(image); i++)
+            {
+                for (int j = 0; j < ImageOperations.GetWidth(image); j++)
+                {
+                    if (!set.Contains(image[i,j]))
+                    {
+                        set.Add(image[i, j]);
+                    }
+                }
+            }
+            return set;
+        }
 
         /// <summary>
         /// Extracts the Distinct Colours from the image
